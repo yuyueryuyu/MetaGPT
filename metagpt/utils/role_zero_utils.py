@@ -106,6 +106,8 @@ async def parse_commands(command_rsp: str, llm, exclusive_tool_commands: list[st
         A tuple containing:
             - A boolean flag indicating success (True) or failure (False).
     """
+    if 'command_name' not in command_rsp:
+        return "No command_name in command", False, command_rsp
     try:
         commands = CodeParser.parse_code(block=None, lang="json", text=command_rsp)
         if commands.endswith("]") and not commands.startswith("["):

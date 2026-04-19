@@ -33,7 +33,7 @@ class Terminal:
             self.executable = "bash"
             self.command_terminator = "\n"
             self.pwd_command = "pwd"
-
+        self.work_dir = DEFAULT_WORKSPACE_ROOT
         self.stdout_queue = Queue(maxsize=1000)
         self.observer = TerminalReporter()
         self.process: Optional[asyncio.subprocess.Process] = None
@@ -53,7 +53,7 @@ class Terminal:
             stderr=STDOUT,
             executable=self.executable,
             env=os.environ.copy(),
-            cwd=str(DEFAULT_WORKSPACE_ROOT) if sys.platform.startswith("win") else DEFAULT_WORKSPACE_ROOT,  # Windows
+            cwd=str(self.work_dir), 
         )
         await self._check_state()
 
