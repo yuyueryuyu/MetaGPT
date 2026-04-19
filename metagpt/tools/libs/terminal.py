@@ -173,6 +173,15 @@ class Terminal:
                     cmd_output.append(line)
                     if daemon:
                         await self.stdout_queue.put(line)
+                line = tmp.decode(errors="ignore")
+                ix = line.rfind(END_MARKER_VALUE)
+                if ix >= 0:
+                    line = line[:ix]
+                    if line:
+                        await observer.async_report(line, "output")
+                        # report stdout in real-time
+                        cmd_output.append(line)
+                    return "".join(cmd_output)
 
     async def close(self):
         """Close the persistent shell process."""

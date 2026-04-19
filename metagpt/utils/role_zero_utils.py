@@ -132,7 +132,9 @@ async def parse_commands(command_rsp: str, llm, exclusive_tool_commands: list[st
     # 为了对LLM不按格式生成进行容错
     if isinstance(commands, dict):
         commands = commands["commands"] if "commands" in commands else [commands]
-
+    # if no command_name in command, return error
+    if not any(command.get('command_name') for command in commands):
+        return "No command_name in command", False, command_rsp
     # Set the exclusive command flag to False.
     command_flag = [command["command_name"] not in exclusive_tool_commands for command in commands]
     if command_flag.count(False) > 1:
