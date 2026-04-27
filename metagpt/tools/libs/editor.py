@@ -363,12 +363,13 @@ class Editor(BaseModel):
         filename = self._try_fix_path(filename)
 
         if filename.exists():
-            raise FileExistsError(f"File '{filename}' already exists.")
-        await awrite(filename, "\n")
-
+            #logger.warning(f"File '{filename}' already exists.")
+            pass
+        else:
+            await awrite(filename, "\n")
         self.open_file(filename)
         return f"[File {filename} created.]"
-
+    
     @staticmethod
     def _append_impl(lines, content):
         """Internal method to handle appending to a file.
