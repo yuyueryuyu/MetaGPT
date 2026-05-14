@@ -293,6 +293,19 @@ class CodeParser:
             # raise Exception
             return text  # just assume original text is code
         return code
+    
+    @classmethod
+    def parse_commands(cls, text: str, lang: str = "", block: Optional[str] = None) -> str:
+        if block:
+            text = cls.parse_block(block, text)
+        pattern = rf"```{lang}.*?\s+((?:(?!/n```).)*?{re.escape('command_name')}.*?)\n```"
+        match = re.search(pattern, text, re.DOTALL)
+        if match:
+            code = match.group(1)
+        else:
+            logger.error(f"commands {pattern} not match following text:")
+            return cls.parse_code(text=text, lang=lang, block=block)
+        return code
 
     @classmethod
     def parse_str(cls, block: str, text: str, lang: str = ""):

@@ -284,10 +284,11 @@ class RoleZero(Role):
         commands, ok, self.command_rsp = await parse_commands(
             command_rsp=self.command_rsp, llm=self.llm, exclusive_tool_commands=self.exclusive_tool_commands
         )
+        logger.info(f"Parsed commands: \n{commands}, ok: {ok}")
         self.rc.memory.add(AIMessage(content=self.command_rsp))
         if not ok:
-            error_msg = commands
-            self.rc.memory.add(UserMessage(content=error_msg, cause_by=RunCommand))
+            error_msg = UserMessage(content=commands, cause_by=RunCommand)
+            self.rc.memory.add(error_msg)
             return error_msg
         logger.info(f"Commands: \n{commands}")
         outputs = await self._run_commands(commands)
@@ -320,7 +321,7 @@ class RoleZero(Role):
             if not has_todo:
                 break
             # act
-            logger.debug(f"{self._setting}: {self.rc.state=}, will do {self.rc.todo}")
+            logger.info(f"{self._setting}: {self.rc.state=}, will do {self.rc.todo}")
             rsp = await self._act()
             actions_taken += 1
 

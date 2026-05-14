@@ -65,6 +65,8 @@ class TeamLeader(RoleZero):
         """Overwrite Role.publish_message, send to no one if called within Role.run (except for quick think), send to the specified role if called dynamically."""
         if not msg:
             return
+        if not isinstance(msg, Message):
+            msg = UserMessage(content=str(msg), sent_from=self.name, send_to=send_to, cause_by=RunCommand)
         if not self.rc.env:
             # If env does not exist, do not publish the message
             return

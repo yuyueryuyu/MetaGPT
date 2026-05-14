@@ -107,9 +107,10 @@ async def parse_commands(command_rsp: str, llm, exclusive_tool_commands: list[st
             - A boolean flag indicating success (True) or failure (False).
     """
     if 'command_name' not in command_rsp:
+        logger.warning(f"No command_name found in response: {command_rsp}")
         return "No command_name in command", False, command_rsp
     try:
-        commands = CodeParser.parse_code(block=None, lang="json", text=command_rsp)
+        commands = CodeParser.parse_commands(block=None, lang="json", text=command_rsp)
         if commands.endswith("]") and not commands.startswith("["):
             commands = "[" + commands
         commands = json.loads(repair_llm_raw_output(output=commands, req_keys=[None], repair_type=RepairType.JSON))
