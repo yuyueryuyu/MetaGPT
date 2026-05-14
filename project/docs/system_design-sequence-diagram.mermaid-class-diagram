@@ -1,4 +1,0 @@
-classDiagram
-    class WordFrequency {
-        +word_frequency(sentence: str, word: str) -> int
-    }
